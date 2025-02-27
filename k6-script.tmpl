@@ -10,6 +10,12 @@ export const options = {
   ]
 }
 
+{{if .Variables}}
+{{- range $key, $value := .Variables }}
+let {{ $key }} = {{ $value }};
+{{- end }}
+{{- end }}
+
 export default function() {
   {{- range .Statements }}
   {{ . }}

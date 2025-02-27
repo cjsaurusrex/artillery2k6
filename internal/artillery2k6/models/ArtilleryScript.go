@@ -11,6 +11,7 @@ type Config struct {
 	Processor string  `yaml:"processor"`
 	Phases    []Phase `yaml:"phases"`
 	//Environments []Environment `yaml:"environments"`
+	Variables map[string]any `yaml:"variables"`
 }
 
 type Phase struct {
