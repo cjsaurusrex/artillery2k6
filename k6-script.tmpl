@@ -1,0 +1,22 @@
+{{- range .Imports}}
+{{- . }}
+{{ end }}
+
+export const options = {
+  stages: [
+    {{- range .Stages }}
+    {{ . }},
+    {{- end }}
+  ]
+}
+
+export default function() {
+  {{- range .Statements }}
+  {{ . }}
+  {{- end }}
+}
+
+{{- range .Processor }}
+// {{ .Name }}
+{{ .Content }}
+{{- end }}
