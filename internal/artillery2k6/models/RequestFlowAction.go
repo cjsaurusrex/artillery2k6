@@ -14,13 +14,15 @@ type Capture struct {
 }
 
 type RequestAction struct {
-	Count    int
-	Name     string
-	Method   string
-	URL      string
-	Headers  map[string]any
-	Expect   map[string]any
-	Captures []Capture
+	Count         int
+	Name          string
+	Method        string
+	URL           string
+	Headers       map[string]any
+	Expect        map[string]any
+	Captures      []Capture
+	BeforeRequest []string
+	AfterRequest  []string
 }
 
 func NewRequestAction(requestCount int) *RequestAction {
@@ -35,6 +37,7 @@ var builderFlow = []func(r *RequestAction, data map[any]any){
 	buildHeaders,
 	buildExpectations,
 	buildCaptures,
+	buildProcessorActions,
 }
 
 func (r *RequestAction) Build(key string, data any) error {
@@ -86,6 +89,26 @@ func buildCaptures(r *RequestAction, data map[any]any) {
 			caps = append(caps, parseCapture(capture.(map[any]any)))
 		}
 		r.Captures = caps
+	}
+}
+
+func buildProcessorActions(r *RequestAction, data map[any]any) {
+	if data["beforeRequest"] != nil {
+		r.BeforeRequest = buildProcessorAction(r, data["beforeRequest"])
+	}
+
+	if data["afterRequest"] != nil {
+		r.AfterRequest = buildProcessorAction(r, data["afterRequest"])
+	}
+}
+
+func buildProcessorAction(r *RequestAction, action any) []string {
+	if list, ok := action.([]string); ok {
+		return list
+	} else if single, ok := action.(string); ok {
+		return []string{single}
+	} else {
+		return []string{}
 	}
 }
 

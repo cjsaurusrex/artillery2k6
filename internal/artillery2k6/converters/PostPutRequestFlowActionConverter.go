@@ -14,6 +14,13 @@ func (r *PostPutRequestFlowActionConverter) Convert() ([]string, []string) {
 	reqName := convertReqName(r.Name)
 	var params = make(map[string]any)
 	imports, statements := []string{}, []string{}
+
+	if r.BeforeRequest != nil {
+		for _, f := range r.BeforeRequest {
+			statements = append(statements, fmt.Sprintf("%s();", f))
+		}
+	}
+
 	if r.Headers != nil {
 		params["headers"] = r.Headers
 	}
@@ -30,8 +37,14 @@ func (r *PostPutRequestFlowActionConverter) Convert() ([]string, []string) {
 	}
 
 	// Convert Expect & Capture
-	ConvertExpect(r.RequestAction, &statements, &imports)
-	ConvertCapture(r.RequestAction, &statements, &imports)
+	convertExpect(r.RequestAction, &statements, &imports)
+	convertCapture(r.RequestAction, &statements, &imports)
+
+	if r.AfterRequest != nil {
+		for _, f := range r.AfterRequest {
+			statements = append(statements, fmt.Sprintf("%s();", f))
+		}
+	}
 
 	return statements, imports
 }
