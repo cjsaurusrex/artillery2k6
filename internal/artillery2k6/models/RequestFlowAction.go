@@ -31,44 +31,61 @@ func NewRequestAction(requestCount int) *RequestAction {
 	}
 }
 
+var builderFlow = []func(r *RequestAction, data map[any]any){
+	buildHeaders,
+	buildExpectations,
+	buildCaptures,
+}
+
 func (r *RequestAction) Build(key string, data any) error {
 	if values, ok := data.(map[any]any); ok {
 		r.Method = key
 		r.URL = values["url"].(string)
 
+		// Set default name
 		if name, ok := values["name"].(string); ok {
 			r.Name = name
 		} else {
 			r.Name = fmt.Sprintf("Req %d", r.Count)
 		}
 
-		if headers, ok := values["headers"].(map[any]any); ok {
-			r.Headers = make(map[string]any)
-			for key, value := range headers {
-				r.Headers[key.(string)] = value
-			}
-		}
-
-		if expectList, ok := values["expect"].([]any); ok {
-			r.Expect = make(map[string]any)
-			for _, expect := range expectList {
-				for key, value := range expect.(map[any]any) {
-					r.Expect[key.(string)] = value
-				}
-			}
-		}
-
-		if values["capture"] != nil {
-			caps := []Capture{}
-			for _, capture := range values["capture"].([]any) {
-				caps = append(caps, parseCapture(capture.(map[any]any)))
-			}
-			r.Captures = caps
+		for _, f := range builderFlow {
+			f(r, values)
 		}
 
 		return nil
 	} else {
 		return errors.New(`invalid request format`)
+	}
+}
+
+func buildHeaders(r *RequestAction, data map[any]any) {
+	if headers, ok := data["headers"].(map[any]any); ok {
+		r.Headers = make(map[string]any)
+		for key, value := range headers {
+			r.Headers[key.(string)] = value
+		}
+	}
+}
+
+func buildExpectations(r *RequestAction, data map[any]any) {
+	if expectList, ok := data["expect"].([]any); ok {
+		r.Expect = make(map[string]any)
+		for _, expect := range expectList {
+			for key, value := range expect.(map[any]any) {
+				r.Expect[key.(string)] = value
+			}
+		}
+	}
+}
+
+func buildCaptures(r *RequestAction, data map[any]any) {
+	if data["capture"] != nil {
+		caps := []Capture{}
+		for _, capture := range data["capture"].([]any) {
+			caps = append(caps, parseCapture(capture.(map[any]any)))
+		}
+		r.Captures = caps
 	}
 }
 
