@@ -37,6 +37,8 @@ func (f *Flow) UnmarshalYAML(unmarshal func(interface{}) error) error {
 		return err
 	}
 
+	reqActionCount := 0
+
 	for _, rawAction := range rawActions {
 		for key, value := range rawAction {
 			var action FlowAction
@@ -44,9 +46,11 @@ func (f *Flow) UnmarshalYAML(unmarshal func(interface{}) error) error {
 			case "log":
 				action = &LogAction{}
 			case "get":
-				action = &RequestAction{}
+				action = NewRequestAction(reqActionCount)
+				reqActionCount++
 			case "post", "put":
-				action = &PostPutRequestAction{RequestAction: &RequestAction{}}
+				action = &PostPutRequestAction{RequestAction: NewRequestAction(reqActionCount)}
+				reqActionCount++
 			}
 			if err := action.Build(key, value); err != nil {
 				return err
