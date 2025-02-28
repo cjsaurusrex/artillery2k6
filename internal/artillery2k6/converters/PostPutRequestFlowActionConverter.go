@@ -29,15 +29,9 @@ func (r *PostPutRequestFlowActionConverter) Convert() ([]string, []string) {
 		statements = append(statements, fmt.Sprintf("let %s = http.%s(\"%s\", %s);", reqName, r.Method, r.URL, string(paramsJson)))
 	}
 
-	// Convert Expect
-	expectStatements, expectImports := ConvertExpect("req", r.RequestAction)
-	statements = append(statements, expectStatements...)
-	imports = append(imports, expectImports...)
-
-	// Convert Captures
-	captureStatements, captureImports := ConvertCapture(r.RequestAction)
-	statements = append(statements, captureStatements...)
-	imports = append(imports, captureImports...)
+	// Convert Expect & Capture
+	ConvertExpect(r.RequestAction, &statements, &imports)
+	ConvertCapture(r.RequestAction, &statements, &imports)
 
 	return statements, imports
 }
