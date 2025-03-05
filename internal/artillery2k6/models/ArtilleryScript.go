@@ -45,6 +45,8 @@ func (f *Flow) UnmarshalYAML(unmarshal func(interface{}) error) error {
 			switch key {
 			case "log":
 				action = &LogAction{}
+			case "think":
+				action = &ThinkAction{}
 			case "get":
 				action = NewRequestAction(reqActionCount)
 				reqActionCount++

@@ -51,7 +51,6 @@ func Build(script models.ArtilleryScript) K6Script {
 func buildVariables(variables map[string]any) map[string]any {
 	vars := map[string]any{}
 	for key, value := range variables {
-		// if value is a string we must wrap it in quotes
 		if str, ok := value.(string); ok {
 			vars[strings.ToUpper(key)] = fmt.Sprintf(`"%s"`, str)
 		} else {
