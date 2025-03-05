@@ -17,7 +17,7 @@ func (r *PostPutRequestFlowActionConverter) Convert() ([]string, []string) {
 
 	if r.BeforeRequest != nil {
 		for _, f := range r.BeforeRequest {
-			statements = append(statements, fmt.Sprintf("%s();", f))
+			statements = append(statements, fmt.Sprintf("%s()", f))
 		}
 	}
 
@@ -42,7 +42,7 @@ func (r *PostPutRequestFlowActionConverter) Convert() ([]string, []string) {
 
 	if r.AfterRequest != nil {
 		for _, f := range r.AfterRequest {
-			statements = append(statements, fmt.Sprintf("%s();", f))
+			statements = append(statements, fmt.Sprintf("%s()", f))
 		}
 	}
 
