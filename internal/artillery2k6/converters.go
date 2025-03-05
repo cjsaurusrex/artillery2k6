@@ -16,6 +16,8 @@ func Convert(action any) (results []string, imports []string) {
 		convertable = &converters.LogActionConverter{LogAction: a}
 	case *models.ThinkAction:
 		convertable = &converters.ThinkActionConverter{ThinkAction: a}
+	case *models.FunctionAction:
+		convertable = &converters.FunctionActionConverter{FunctionAction: a}
 	case *models.PostPutRequestAction:
 		convertable = &converters.PostPutRequestFlowActionConverter{PostPutRequestAction: a}
 	case *models.RequestAction:

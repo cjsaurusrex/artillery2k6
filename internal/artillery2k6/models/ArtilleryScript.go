@@ -47,6 +47,8 @@ func (f *Flow) UnmarshalYAML(unmarshal func(interface{}) error) error {
 				action = &LogAction{}
 			case "think":
 				action = &ThinkAction{}
+			case "function":
+				action = &FunctionAction{}
 			case "get":
 				action = NewRequestAction(reqActionCount)
 				reqActionCount++
