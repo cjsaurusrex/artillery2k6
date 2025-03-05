@@ -28,7 +28,7 @@ func (r *RequestFlowActionConverter) Convert() ([]string, []string) {
 	}
 
 	json, _ := json.Marshal(params)
-	statements = append(statements, fmt.Sprintf("let %s = http.%s(\"%s\", %s);", convertReqName(r.Name), r.Method, r.URL, string(json)))
+	statements = append(statements, fmt.Sprintf("let %s = http.%s(\"%s\", %s)", convertReqName(r.Name), r.Method, r.URL, string(json)))
 
 	convertExpect(r.RequestAction, &statements, &imports)
 	convertCapture(r.RequestAction, &statements, &imports)

@@ -18,7 +18,7 @@ let {{ $key }} = {{ $value }};
 
 export default function() {
   {{- range .Statements }}
-  {{ . }}
+  {{ . }}{{- if . }};{{- end }}
   {{- end }}
 }
 
