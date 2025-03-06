@@ -23,7 +23,7 @@ func (r *RequestFlowActionConverter) Convert() ([]string, []string) {
 		}
 	}
 
-	if r.Headers != nil {
+	if r.Headers != nil && len(r.Headers) > 0 {
 		params["headers"] = r.Headers
 	}
 
