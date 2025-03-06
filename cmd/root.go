@@ -10,7 +10,7 @@ import (
 var K6ScriptTemplate embed.FS
 
 var rootCmd = &cobra.Command{
-	Use:   "ArtilleryToK6",
+	Use:   "Artillery2k6",
 	Short: "Converts Artillery scripts to k6 scripts",
 }
 
