@@ -32,6 +32,6 @@ var convertCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(convertCmd)
-
-	convertCmd.Flags().String("output", "output.js", "Output file")
+	
+	convertCmd.Flags().StringP("output", "o", "output.js", "Output file")
 }
