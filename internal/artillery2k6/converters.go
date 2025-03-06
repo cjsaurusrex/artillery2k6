@@ -1,8 +1,8 @@
 package artillery2k6
 
 import (
-	"github.com/cjsaurusrex/arillery2k6/internal/artillery2k6/converters"
-	"github.com/cjsaurusrex/arillery2k6/internal/artillery2k6/models"
+	"github.com/cjsaurusrex/artillery2k6/internal/artillery2k6/converters"
+	"github.com/cjsaurusrex/artillery2k6/internal/artillery2k6/models"
 )
 
 type Convertable interface {

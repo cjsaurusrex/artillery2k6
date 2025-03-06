@@ -2,7 +2,7 @@ package artillery2k6
 
 import (
 	"fmt"
-	"github.com/cjsaurusrex/arillery2k6/internal/artillery2k6/models"
+	"github.com/cjsaurusrex/artillery2k6/internal/artillery2k6/models"
 	"path/filepath"
 	"slices"
 	"strings"

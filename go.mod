@@ -1,4 +1,4 @@
-module github.com/cjsaurusrex/arillery2k6
+module github.com/cjsaurusrex/artillery2k6
 
 go 1.22.1
 

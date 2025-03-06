@@ -18,7 +18,7 @@ Copyright © 2024 Christopher Orchard <EMAIL ADDRESS>
 
 package main
 
-import "github.com/cjsaurusrex/arillery2k6/cmd"
+import "github.com/cjsaurusrex/artillery2k6/cmd"
 
 func main() {
 	cmd.Execute()

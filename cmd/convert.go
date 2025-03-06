@@ -2,7 +2,7 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/cjsaurusrex/arillery2k6/internal/artillery2k6"
+	"github.com/cjsaurusrex/artillery2k6/internal/artillery2k6"
 	"github.com/spf13/cobra"
 	"os"
 	"text/template"

@@ -3,7 +3,7 @@ package converters
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/cjsaurusrex/arillery2k6/internal/artillery2k6/models"
+	"github.com/cjsaurusrex/artillery2k6/internal/artillery2k6/models"
 )
 
 type PostPutRequestFlowActionConverter struct {

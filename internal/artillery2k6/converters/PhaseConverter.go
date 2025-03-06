@@ -2,7 +2,7 @@ package converters
 
 import (
 	"encoding/json"
-	"github.com/cjsaurusrex/arillery2k6/internal/artillery2k6/models"
+	"github.com/cjsaurusrex/artillery2k6/internal/artillery2k6/models"
 	"strconv"
 )
 

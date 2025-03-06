@@ -1,7 +1,7 @@
 package artillery2k6
 
 import (
-	"github.com/cjsaurusrex/arillery2k6/internal/artillery2k6/models"
+	"github.com/cjsaurusrex/artillery2k6/internal/artillery2k6/models"
 	"gopkg.in/yaml.v2"
 	"log"
 	"os"
