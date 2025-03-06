@@ -6,6 +6,7 @@ import (
 	"os"
 )
 
+//go:embed k6-script.tmpl
 var K6ScriptTemplate embed.FS
 
 var rootCmd = &cobra.Command{
