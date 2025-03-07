@@ -3,6 +3,7 @@ package converters
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/cjsaurusrex/artillery2k6/internal/artillery2k6/helpers"
 	"github.com/cjsaurusrex/artillery2k6/internal/artillery2k6/models"
 	"strconv"
 	"strings"
@@ -28,7 +29,11 @@ func (r *RequestFlowActionConverter) Convert() ([]string, []string) {
 	}
 
 	json, _ := json.Marshal(params)
-	statements = append(statements, fmt.Sprintf("let %s = http.%s(\"%s\", %s)", convertReqName(r.Name), r.Method, r.URL, string(json)))
+
+	statement := fmt.Sprintf("let %s = http.%s(\"%s\", %s)", convertReqName(r.Name), r.Method, r.URL, string(json))
+	statement = helpers.InterpolateArtilleryVariables(statement)
+
+	statements = append(statements, statement)
 
 	convertExpect(r.RequestAction, &statements, &imports)
 	convertCapture(r.RequestAction, &statements, &imports)

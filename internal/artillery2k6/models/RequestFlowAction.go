@@ -3,6 +3,7 @@ package models
 import (
 	"errors"
 	"fmt"
+	"github.com/cjsaurusrex/artillery2k6/internal/artillery2k6/helpers"
 	"slices"
 	"strings"
 )
@@ -118,7 +119,7 @@ func parseCapture(capture map[any]any) Capture {
 	for k, v := range capture {
 		key := fmt.Sprintf("%v", k)
 		if strings.ToLower(key) == "as" {
-			c.As = fmt.Sprintf("%v", v)
+			c.As = helpers.BuildVariableName(fmt.Sprintf("%v", v)) // fmt.Sprintf("%v", v)
 			continue
 		}
 		if slices.Contains(validTypes, key) {

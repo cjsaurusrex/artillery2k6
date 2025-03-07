@@ -3,6 +3,7 @@ package converters
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/cjsaurusrex/artillery2k6/internal/artillery2k6/helpers"
 	"github.com/cjsaurusrex/artillery2k6/internal/artillery2k6/models"
 )
 
@@ -21,7 +22,7 @@ func (r *PostPutRequestFlowActionConverter) Convert() ([]string, []string) {
 		}
 	}
 
-	if r.Headers != nil {
+	if r.Headers != nil && len(r.Headers) > 0 {
 		params["headers"] = r.Headers
 	}
 
@@ -30,10 +31,10 @@ func (r *PostPutRequestFlowActionConverter) Convert() ([]string, []string) {
 	if r.Json != nil {
 		rdn := fmt.Sprintf("%sData", reqName)
 		jsonString, _ := json.Marshal(r.Json)
-		statements = append(statements, fmt.Sprintf("let %s = %s;", rdn, string(jsonString)))
-		statements = append(statements, fmt.Sprintf("let %s = http.%s(\"%s\", JSON.stringify(%s), %s)", reqName, r.Method, r.URL, rdn, string(paramsJson)))
+		statements = append(statements, helpers.InterpolateArtilleryVariables(fmt.Sprintf("let %s = %s", rdn, string(jsonString))))
+		statements = append(statements, helpers.InterpolateArtilleryVariables(fmt.Sprintf("let %s = http.%s(\"%s\", JSON.stringify(%s), %s)", reqName, r.Method, r.URL, rdn, string(paramsJson))))
 	} else {
-		statements = append(statements, fmt.Sprintf("let %s = http.%s(\"%s\", %s);", reqName, r.Method, r.URL, string(paramsJson)))
+		statements = append(statements, helpers.InterpolateArtilleryVariables(fmt.Sprintf("let %s = http.%s(\"%s\", %s)", reqName, r.Method, r.URL, string(paramsJson))))
 	}
 
 	// Convert Expect & Capture

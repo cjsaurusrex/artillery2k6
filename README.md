@@ -10,7 +10,7 @@ This tool works to make a 'best effort' approach to migrating to k6, and may not
 - Supports the following features
   - Single scenarios
   - ArrivalRate Phases
-  - Variable declarations
+  - Variable declarations & usage within requests
   - Multi-step flows
   - HTTP methods: GET, POST & PUT Requests (with support for headers and JSON payloads)
   - Response status code expectations

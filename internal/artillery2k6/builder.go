@@ -2,10 +2,10 @@ package artillery2k6
 
 import (
 	"fmt"
+	"github.com/cjsaurusrex/artillery2k6/internal/artillery2k6/helpers"
 	"github.com/cjsaurusrex/artillery2k6/internal/artillery2k6/models"
 	"path/filepath"
 	"slices"
-	"strings"
 )
 
 type K6Script struct {
@@ -52,9 +52,9 @@ func buildVariables(variables map[string]any) map[string]any {
 	vars := map[string]any{}
 	for key, value := range variables {
 		if str, ok := value.(string); ok {
-			vars[strings.ToUpper(key)] = fmt.Sprintf(`"%s"`, str)
+			vars[helpers.BuildVariableName(key)] = fmt.Sprintf(`"%s"`, str)
 		} else {
-			vars[strings.ToUpper(key)] = value
+			vars[helpers.BuildVariableName(key)] = value
 		}
 	}
 
