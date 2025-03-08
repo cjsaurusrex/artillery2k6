@@ -1,28 +1,33 @@
-{{- range .Imports}}
+{{- range .Script.InitLifecycle.Imports}}
 {{- . }}
 {{ end }}
 
 export const options = {
   stages: [
-    {{- range .Stages }}
+    {{- range .Script.InitLifecycle.Stages }}
     {{ . }},
     {{- end }}
   ]
 }
-
-{{if .Variables}}
-{{- range $key, $value := .Variables }}
-let {{ $key }} = {{ $value }};
-{{- end }}
+{{ range .Script.InitLifecycle.Statements }}
+{{ . }}{{- if . }};{{- end }}
 {{- end }}
 
 export default function() {
-  {{- range .Statements }}
+  {{- range .Script.VULifecycle.Statements }}
   {{ . }}{{- if . }};{{- end }}
   {{- end }}
 }
+{{ if .Config.EnvironmentsInUse }}
+function {{ .Config.GetVariableFromEnvironmentFuncName }}(variableName) {
+  return environments[__ENV.ENVIRONMENT]?.["variables"]?.[variableName] || globalThis[variableName];
+}
+{{- end }}
 
-{{- range .Processor }}
+{{ if .Script.Processor }}
+// Auto generated processors. These have been generated on a best-guess basis - please review them before use.
+{{- range .Script.Processor }}
 // {{ .Name }}
 {{ .Content }}
+{{- end }}
 {{- end }}

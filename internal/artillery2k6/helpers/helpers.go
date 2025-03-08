@@ -14,7 +14,26 @@ func BuildVariableName(input string) string {
 	return string(n)
 }
 
-func InterpolateArtilleryVariables(input string) string {
+func BuildVariableReference(config *BuilderConfig, input string) string {
+	if config != nil && config.EnvironmentsInUse {
+		return fmt.Sprintf(`%s("%s")`, config.GetVariableFromEnvironmentFuncName, BuildVariableName(input))
+	}
+	if config.RootVariableFormat == GlobalThis {
+		return fmt.Sprintf(`globalThis["%s"]`, BuildVariableName(input))
+	}
+
+	return BuildVariableName(input)
+}
+
+func BuildVariableDefinitionPrefix(config *BuilderConfig, input string) string {
+	if config != nil && config.RootVariableFormat == GlobalThis {
+		return fmt.Sprintf(`globalThis["%s"]`, BuildVariableName(input))
+	}
+
+	return fmt.Sprintf("let %s", BuildVariableName(input))
+}
+
+func InterpolateArtilleryVariables(config *BuilderConfig, input string) string {
 	if !strings.Contains(input, "{{") {
 		return input
 	}
@@ -29,7 +48,7 @@ func InterpolateArtilleryVariables(input string) string {
 	}
 
 	for _, match := range matches {
-		result = strings.ReplaceAll(result, match[0], fmt.Sprintf("${ %s }", BuildVariableName(match[1])))
+		result = strings.ReplaceAll(result, match[0], fmt.Sprintf("${ %s }", BuildVariableReference(config, match[1])))
 	}
 
 	dq := regexp.MustCompile(`\"([^"]*\$\{[^}]+\}[^"]*)\"`) // Find double quotes with variables

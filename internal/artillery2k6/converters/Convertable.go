@@ -1,5 +1,7 @@
 package converters
 
+import "github.com/cjsaurusrex/artillery2k6/internal/artillery2k6/helpers"
+
 type Convertable interface {
-	Convert() (statements []string, imports []string)
+	Convert(config *helpers.BuilderConfig) (statements []string, imports []string)
 }

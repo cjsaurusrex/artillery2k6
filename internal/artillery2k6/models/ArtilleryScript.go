@@ -7,11 +7,11 @@ type ArtilleryScript struct {
 }
 
 type Config struct {
-	Target    string  `yaml:"target"`
-	Processor string  `yaml:"processor"`
-	Phases    []Phase `yaml:"phases"`
-	//Environments []Environment `yaml:"environments"`
-	Variables map[string]any `yaml:"variables"`
+	Target       string                 `yaml:"target"`
+	Processor    string                 `yaml:"processor"`
+	Phases       []Phase                `yaml:"phases"`
+	Environments map[string]Environment `yaml:"environments"`
+	Variables    map[string]any         `yaml:"variables"`
 }
 
 type Phase struct {
@@ -20,6 +20,12 @@ type Phase struct {
 	ArrivalRate  *int    `yaml:"arrivalRate,omitempty"`
 	RampTo       *int    `yaml:"rampTo,omitempty"`
 	ArrivalCount *int    `yaml:"arrivalCount,omitempty"`
+}
+
+type Environment struct {
+	Target    string         `yaml:"target,omitempty" json:"target,omitempty"`
+	Phases    []Phase        `yaml:"phases,omitempty" json:"-"`
+	Variables map[string]any `yaml:"variables,omitempty" json:"variables,omitempty"`
 }
 
 type Scenario struct {

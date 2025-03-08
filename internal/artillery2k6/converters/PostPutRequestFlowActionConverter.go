@@ -11,7 +11,7 @@ type PostPutRequestFlowActionConverter struct {
 	*models.PostPutRequestAction
 }
 
-func (r *PostPutRequestFlowActionConverter) Convert() ([]string, []string) {
+func (r *PostPutRequestFlowActionConverter) Convert(config *helpers.BuilderConfig) ([]string, []string) {
 	reqName := convertReqName(r.Name)
 	var params = make(map[string]any)
 	imports, statements := []string{}, []string{}
@@ -31,10 +31,10 @@ func (r *PostPutRequestFlowActionConverter) Convert() ([]string, []string) {
 	if r.Json != nil {
 		rdn := fmt.Sprintf("%sData", reqName)
 		jsonString, _ := json.Marshal(r.Json)
-		statements = append(statements, helpers.InterpolateArtilleryVariables(fmt.Sprintf("let %s = %s", rdn, string(jsonString))))
-		statements = append(statements, helpers.InterpolateArtilleryVariables(fmt.Sprintf("let %s = http.%s(\"%s\", JSON.stringify(%s), %s)", reqName, r.Method, r.URL, rdn, string(paramsJson))))
+		statements = append(statements, helpers.InterpolateArtilleryVariables(config, fmt.Sprintf("let %s = %s", rdn, string(jsonString))))
+		statements = append(statements, helpers.InterpolateArtilleryVariables(config, fmt.Sprintf("let %s = http.%s(\"%s\", JSON.stringify(%s), %s)", reqName, r.Method, r.URL, rdn, string(paramsJson))))
 	} else {
-		statements = append(statements, helpers.InterpolateArtilleryVariables(fmt.Sprintf("let %s = http.%s(\"%s\", %s)", reqName, r.Method, r.URL, string(paramsJson))))
+		statements = append(statements, helpers.InterpolateArtilleryVariables(config, fmt.Sprintf("let %s = http.%s(\"%s\", %s)", reqName, r.Method, r.URL, string(paramsJson))))
 	}
 
 	// Convert Expect & Capture

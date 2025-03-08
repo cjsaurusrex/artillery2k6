@@ -25,7 +25,7 @@ func TestBuildVariableName_lowercasesStart(t *testing.T) {
 	}
 }
 
-func TestInterpolateArtilleryVariables(t *testing.T) {
+func TestInterpolateArtilleryVariables_LocalVariableFormat(t *testing.T) {
 	type test struct {
 		input    string
 		expected string
@@ -38,9 +38,13 @@ func TestInterpolateArtilleryVariables(t *testing.T) {
 		{`http.get("www.{{domain}}.com", { headers: {"User-Agent": "{{ userAgent }}" }})`, "http.get(`www.${ domain }.com`, { headers: {\"User-Agent\": `${ userAgent }` }})"},
 	}
 
+	bc := &BuilderConfig{
+		RootVariableFormat: Local,
+	}
+
 	for _, tc := range tests {
 		t.Run(tc.input, func(t *testing.T) {
-			actual := InterpolateArtilleryVariables(tc.input)
+			actual := InterpolateArtilleryVariables(bc, tc.input)
 			if actual != tc.expected {
 				t.Errorf("Expected %s, got %s", tc.expected, actual)
 			}

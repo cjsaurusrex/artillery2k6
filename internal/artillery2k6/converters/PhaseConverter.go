@@ -2,6 +2,7 @@ package converters
 
 import (
 	"encoding/json"
+	"github.com/cjsaurusrex/artillery2k6/internal/artillery2k6/helpers"
 	"github.com/cjsaurusrex/artillery2k6/internal/artillery2k6/models"
 	"strconv"
 )
@@ -12,7 +13,7 @@ type PhaseConverter struct {
 	Target   string        `json:"target"`
 }
 
-func (p *PhaseConverter) Convert() ([]string, []string) {
+func (p *PhaseConverter) Convert(_ *helpers.BuilderConfig) ([]string, []string) {
 	p.Duration = "60"
 	if p.Base.Duration != nil {
 		p.Duration = strconv.Itoa(*p.Base.Duration)

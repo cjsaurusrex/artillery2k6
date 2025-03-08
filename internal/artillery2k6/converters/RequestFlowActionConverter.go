@@ -14,7 +14,7 @@ type RequestFlowActionConverter struct {
 	*models.RequestAction
 }
 
-func (r *RequestFlowActionConverter) Convert() ([]string, []string) {
+func (r *RequestFlowActionConverter) Convert(config *helpers.BuilderConfig) ([]string, []string) {
 	var params = make(map[string]any)
 	imports, statements := []string{}, []string{}
 
@@ -31,7 +31,7 @@ func (r *RequestFlowActionConverter) Convert() ([]string, []string) {
 	json, _ := json.Marshal(params)
 
 	statement := fmt.Sprintf("let %s = http.%s(\"%s\", %s)", convertReqName(r.Name), r.Method, r.URL, string(json))
-	statement = helpers.InterpolateArtilleryVariables(statement)
+	statement = helpers.InterpolateArtilleryVariables(config, statement)
 
 	statements = append(statements, statement)
 
