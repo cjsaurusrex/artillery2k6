@@ -25,8 +25,8 @@ func BuildScript(config *helpers.BuilderConfig, script models.ArtilleryScript) K
 			}
 		}
 
-		json, _ := json.MarshalIndent(script.Config.Environments, "", "  ")
-		k6Script.InitLifecycle.Statements = append(k6Script.InitLifecycle.Statements, fmt.Sprintf("let environments = %s", string(json)))
+		j, _ := json.MarshalIndent(script.Config.Environments, "", "  ")
+		k6Script.InitLifecycle.Statements = append(k6Script.InitLifecycle.Statements, fmt.Sprintf("let environments = %s", string(j)))
 	}
 
 	k6Script.InitLifecycle.Statements = append(k6Script.InitLifecycle.Statements, buildVariables(config, script.Config.Variables)...)

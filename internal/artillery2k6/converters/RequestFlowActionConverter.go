@@ -28,9 +28,9 @@ func (r *RequestFlowActionConverter) Convert(config *helpers.BuilderConfig) ([]s
 		params["headers"] = r.Headers
 	}
 
-	json, _ := json.Marshal(params)
+	j, _ := json.Marshal(params)
 
-	statement := fmt.Sprintf("let %s = http.%s(\"%s\", %s)", convertReqName(r.Name), r.Method, r.URL, string(json))
+	statement := fmt.Sprintf("let %s = http.%s(\"%s\", %s)", convertReqName(r.Name), r.Method, r.URL, string(j))
 	statement = helpers.InterpolateArtilleryVariables(config, statement)
 
 	statements = append(statements, statement)

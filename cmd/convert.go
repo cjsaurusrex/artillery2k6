@@ -25,9 +25,9 @@ var convertCmd = &cobra.Command{
 		k6Script := artillery2k6.BuildScript(bc, artilleryScript)
 		k6ScriptContext := artillery2k6.BuildContext(k6Script, *bc)
 
-		tmpl, error := template.New("k6-script.tmpl").ParseFS(K6ScriptTemplate, "k6-script.tmpl")
-		if error != nil {
-			fmt.Println(error)
+		tmpl, err := template.New("k6-script.tmpl").ParseFS(K6ScriptTemplate, "k6-script.tmpl")
+		if err != nil {
+			fmt.Println(err)
 		}
 
 		file, _ := os.Create(cmd.Flag("output").Value.String())
