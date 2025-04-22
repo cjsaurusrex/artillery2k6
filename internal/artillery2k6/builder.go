@@ -19,7 +19,6 @@ func BuildScript(config *helpers.BuilderConfig, script models.ArtilleryScript) K
 	}
 
 	if config.EnvironmentsInUse {
-
 		for _, env := range script.Config.Environments {
 			if env.Variables != nil {
 				updateEnvironmentVariableNames(&env.Variables)
@@ -31,6 +30,14 @@ func BuildScript(config *helpers.BuilderConfig, script models.ArtilleryScript) K
 	}
 
 	k6Script.InitLifecycle.Statements = append(k6Script.InitLifecycle.Statements, buildVariables(config, script.Config.Variables)...)
+
+	if config.PayloadsInUse {
+		statements, imports := buildPayloadDeclarations(config, script)
+		k6Script.InitLifecycle.Statements = append(k6Script.InitLifecycle.Statements, statements...)
+		k6Script.InitLifecycle.Imports = append(k6Script.InitLifecycle.Imports, imports...)
+
+		k6Script.VULifecycle.Statements = append(k6Script.VULifecycle.Statements, buildPayloadVariableStatements(config, script)...)
+	}
 
 	for _, scenario := range script.Scenarios {
 		for _, action := range scenario.Flow.FlowActions {
@@ -83,4 +90,65 @@ func buildVariables(config *helpers.BuilderConfig, variables map[string]any) []s
 	}
 
 	return vars
+}
+
+func buildPayloadDeclarations(config *helpers.BuilderConfig, script models.ArtilleryScript) (statements []string, imports []string) {
+	imports = []string{fmt.Sprintf("import { open as %s } from 'k6/experimental/fs'", config.CsvOpenAlias),
+		"import csv from 'k6/experimental/csv'"}
+	statements = []string{}
+
+	rootPayloads, environmentPayloads := []string{}, []string{}
+	for _, v := range script.Config.Payloads.Payloads {
+		rootPayloads = append(rootPayloads, v.Name)
+	}
+
+	for _, e := range script.Config.Environments {
+		for _, v := range e.Payload.Payloads {
+			environmentPayloads = append(environmentPayloads, v.Name)
+		}
+	}
+
+	completed := []string{}
+	for _, payload := range append(rootPayloads, environmentPayloads...) {
+		if slices.Contains(completed, payload) {
+			continue
+		}
+
+		if slices.Contains(rootPayloads, payload) && slices.Contains(environmentPayloads, payload) {
+			statements = append(statements, fmt.Sprintf(`let %sData = %s(environments[__ENV.ENVIRONMENT]?.payloads?.%s || "%s")`, payload, config.LoadCsvFunctionName, payload, payload))
+		} else if slices.Contains(rootPayloads, payload) {
+			statements = append(statements, fmt.Sprintf(`let %sData = %s("%s")`, payload, config.LoadCsvFunctionName, payload))
+		} else if slices.Contains(environmentPayloads, payload) {
+			statements = append(statements, fmt.Sprintf(`let %sData = %s(environments[__ENV.ENVIRONMENT]?.payloads?.%s)`, payload, config.LoadCsvFunctionName, payload))
+		}
+		completed = append(completed, payload)
+	}
+
+	return statements, imports
+}
+
+func buildPayloadVariableStatements(config *helpers.BuilderConfig, script models.ArtilleryScript) []string {
+	statements := []string{}
+	allPayloads := []models.PayloadConfig{}
+
+	for _, env := range script.Config.Environments {
+		allPayloads = append(allPayloads, env.Payload.Payloads...)
+	}
+	allPayloads = append(allPayloads, script.Config.Payloads.Payloads...)
+	completed := []string{}
+
+	for _, payload := range allPayloads {
+		if slices.Contains(completed, payload.Name) {
+			continue
+		}
+
+		for _, field := range payload.Fields {
+			v := helpers.BuildVariableDefinitionPrefix(config, field)
+			statements = append(statements, fmt.Sprintf("%s = %sData[Math.floor(Math.random()*%sData.length)].%s", v, payload.Name, payload.Name, field))
+		}
+
+		completed = append(completed, payload.Name)
+	}
+
+	return statements
 }

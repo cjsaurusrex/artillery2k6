@@ -24,6 +24,13 @@ function {{ .Config.GetVariableFromEnvironmentFuncName }}(variableName) {
 }
 {{- end }}
 
+{{ if .Config.PayloadsInUse }}
+async function {{ .Config.LoadCsvFunctionName }}(path, options) {
+  let file = {{ .Config.CsvOpenAlias }}(path);
+  return await csv.parse(file, options);
+}
+{{- end }}
+
 {{ if .Script.Processor }}
 // Auto generated processors. These have been generated on a best-guess basis - please review them before use.
 {{- range .Script.Processor }}

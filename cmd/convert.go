@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/cjsaurusrex/artillery2k6/internal/artillery2k6"
 	"github.com/cjsaurusrex/artillery2k6/internal/artillery2k6/helpers"
+	"github.com/cjsaurusrex/artillery2k6/internal/artillery2k6/models"
 	"github.com/spf13/cobra"
 	"os"
 	"text/template"
@@ -19,10 +20,7 @@ var convertCmd = &cobra.Command{
 
 		artilleryScript := artillery2k6.Parse(filePath)
 		bc := helpers.NewBuilderConfig()
-		if artilleryScript.Config.Environments != nil {
-			bc.EnvironmentsInUse = true
-			bc.RootVariableFormat = helpers.GlobalThis
-		}
+		SetupBuilderConfig(bc, artilleryScript)
 
 		k6Script := artillery2k6.BuildScript(bc, artilleryScript)
 		k6ScriptContext := artillery2k6.BuildContext(k6Script, *bc)
@@ -36,6 +34,25 @@ var convertCmd = &cobra.Command{
 		defer file.Close()
 		tmpl.Execute(file, k6ScriptContext)
 	},
+}
+
+func SetupBuilderConfig(bc *helpers.BuilderConfig, script models.ArtilleryScript) {
+	if script.Config.Environments != nil {
+		bc.EnvironmentsInUse = true
+		bc.RootVariableFormat = helpers.GlobalThis
+	}
+
+	bc.PayloadsInUse = len(script.Config.Payloads.Payloads) > 0
+	if !bc.PayloadsInUse && bc.EnvironmentsInUse {
+		envsUsingPayloads := false
+		for _, env := range script.Config.Environments {
+			if len(env.Payload.Payloads) > 0 {
+				envsUsingPayloads = true
+				break
+			}
+		}
+		bc.PayloadsInUse = envsUsingPayloads
+	}
 }
 
 func init() {

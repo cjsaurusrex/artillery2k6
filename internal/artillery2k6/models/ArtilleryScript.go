@@ -12,6 +12,7 @@ type Config struct {
 	Phases       []Phase                `yaml:"phases"`
 	Environments map[string]Environment `yaml:"environments"`
 	Variables    map[string]any         `yaml:"variables"`
+	Payloads     Payload                `yaml:"payload"`
 }
 
 type Phase struct {
@@ -26,6 +27,7 @@ type Environment struct {
 	Target    string         `yaml:"target,omitempty" json:"target,omitempty"`
 	Phases    []Phase        `yaml:"phases,omitempty" json:"-"`
 	Variables map[string]any `yaml:"variables,omitempty" json:"variables,omitempty"`
+	Payload   Payload        `yaml:"payload,omitempty" json:"payloads,omitempty"`
 }
 
 type Scenario struct {

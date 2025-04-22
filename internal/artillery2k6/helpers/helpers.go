@@ -18,7 +18,7 @@ func BuildVariableReference(config *BuilderConfig, input string) string {
 	if config != nil && config.EnvironmentsInUse {
 		return fmt.Sprintf(`%s("%s")`, config.GetVariableFromEnvironmentFuncName, BuildVariableName(input))
 	}
-	if config.RootVariableFormat == GlobalThis {
+	if config != nil && config.RootVariableFormat == GlobalThis {
 		return fmt.Sprintf(`globalThis["%s"]`, BuildVariableName(input))
 	}
 
@@ -59,4 +59,13 @@ func InterpolateArtilleryVariables(config *BuilderConfig, input string) string {
 	}
 
 	return result
+}
+
+func AnyMatch(slice []any, condition func(any) bool) bool {
+	for _, v := range slice {
+		if condition(v) {
+			return true
+		}
+	}
+	return false
 }
