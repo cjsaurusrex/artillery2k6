@@ -57,6 +57,11 @@ func BuildScript(config *helpers.BuilderConfig, script models.ArtilleryScript) K
 		k6Script.Processor = BuildProcessor(script.Config.Processor, filepath.Dir(script.Path), nil)
 	}
 
+	if script.Config.Target != "" {
+		targetStatement := helpers.BuildVariableDefinitionPrefix(config, config.TargetVariableName) + fmt.Sprintf(" = \"%s\"", script.Config.Target)
+		k6Script.InitLifecycle.Statements = append(k6Script.InitLifecycle.Statements, targetStatement)
+	}
+
 	return k6Script
 }
 

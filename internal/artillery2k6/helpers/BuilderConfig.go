@@ -20,6 +20,9 @@ type BuilderConfig struct {
 
 	// Alias of the 'csv.open' function
 	CsvOpenAlias string
+
+	// Name of the Artillery 'Target' in the k6 script
+	TargetVariableName string
 }
 
 type VariableFormat int
@@ -35,5 +38,6 @@ func NewBuilderConfig() *BuilderConfig {
 		GetVariableFromEnvironmentFuncName: "getVariableFromEnvironmentOrDefault",
 		LoadCsvFunctionName:                "loadCsvFile",
 		CsvOpenAlias:                       "csv_open",
+		TargetVariableName:                 "target",
 	}
 }

@@ -14,6 +14,14 @@ type RequestFlowActionConverter struct {
 	*models.RequestAction
 }
 
+func (r *RequestFlowActionConverter) formatURL(config *helpers.BuilderConfig, url string) string {
+	if strings.HasPrefix(strings.ToLower(url), "http") {
+		return fmt.Sprintf("`%s`", url)
+	}
+	targetReference := helpers.BuildVariableReference(config, "target")
+	return fmt.Sprintf("`${%s}%s`", targetReference, strings.TrimPrefix(url, "/"))
+}
+
 func (r *RequestFlowActionConverter) Convert(config *helpers.BuilderConfig) ([]string, []string) {
 	var params = make(map[string]any)
 	imports, statements := []string{}, []string{}
@@ -30,7 +38,15 @@ func (r *RequestFlowActionConverter) Convert(config *helpers.BuilderConfig) ([]s
 
 	j, _ := json.Marshal(params)
 
-	statement := fmt.Sprintf("let %s = http.%s(\"%s\", %s)", convertReqName(r.Name), r.Method, r.URL, string(j))
+	url := r.URL
+	if strings.HasPrefix(strings.ToLower(url), "http") {
+		url = fmt.Sprintf("\"%s\"", url)
+	} else {
+		targetReference := helpers.BuildVariableReference(config, config.TargetVariableName)
+		url = fmt.Sprintf("%s + \"%s\"", targetReference, url)
+	}
+
+	statement := fmt.Sprintf("let %s = http.%s(%s, %s)", convertReqName(r.Name), r.Method, url, string(j))
 	statement = helpers.InterpolateArtilleryVariables(config, statement)
 
 	statements = append(statements, statement)
@@ -76,4 +92,13 @@ func convertReqName(name string) string {
 	n[0] = unicode.ToLower(n[0])
 
 	return string(n)
+}
+
+func formatURL(config *helpers.BuilderConfig, url string) string {
+	if strings.HasPrefix(strings.ToLower(url), "http") {
+		return fmt.Sprintf("\"%s\"", url)
+	} else {
+		targetReference := helpers.BuildVariableReference(config, config.TargetVariableName)
+		return fmt.Sprintf("%s + \"%s\"", targetReference, url)
+	}
 }
