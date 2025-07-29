@@ -46,7 +46,13 @@ func (r *RequestFlowActionConverter) Convert(config *helpers.BuilderConfig) ([]s
 		url = fmt.Sprintf("%s + \"%s\"", targetReference, url)
 	}
 
-	statement := fmt.Sprintf("let %s = http.%s(%s, %s)", convertReqName(r.Name), r.Method, url, string(j))
+	var statement string
+	if params != nil && len(params) > 0 {
+		statement = fmt.Sprintf("let %s = http.%s(%s, %s)", convertReqName(r.Name), r.Method, url, string(j))
+	} else {
+		statement = fmt.Sprintf("let %s = http.%s(%s)", convertReqName(r.Name), r.Method, url)
+	}
+
 	statement = helpers.InterpolateArtilleryVariables(config, statement)
 
 	statements = append(statements, statement)
