@@ -22,13 +22,14 @@ This tool works to make a 'best effort' approach to migrating to k6, and may not
   - Importing of processors, including nested imports
     - Conversion of context variables to `globalThis`
     - Cleanup of any `export` statements
+  - Environment support
+    - Supports variables, targets and payloads
 
 ## Roadmap
 - Support for additional Artillery features:
   - Multiple weighted scenarios
   - Loop actions
   - Additional phase types and k6 executors
-  - Environment support
   - `BeforeScenario` and `AfterScenario` processor hooks
   - `before` and `after` sections
   - CLI Flags to enable/disable functionality
