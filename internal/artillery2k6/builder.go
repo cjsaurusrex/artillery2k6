@@ -19,10 +19,14 @@ func BuildScript(config *helpers.BuilderConfig, script models.ArtilleryScript) K
 	}
 
 	if config.EnvironmentsInUse {
-		for _, env := range script.Config.Environments {
-			if env.Variables != nil {
-				updateEnvironmentVariableNames(&env.Variables)
+		for envName, env := range script.Config.Environments {
+			if env.Target != "" {
+				if env.Variables == nil {
+					env.Variables = make(map[string]any)
+				}
+				env.Variables[config.TargetVariableName] = env.Target
 			}
+			script.Config.Environments[envName] = env
 		}
 
 		j, _ := json.MarshalIndent(script.Config.Environments, "", "  ")
@@ -70,14 +74,6 @@ func BuildContext(script K6Script, config helpers.BuilderConfig) K6ScriptContext
 		Script: script,
 		Config: config,
 	}
-}
-
-func updateEnvironmentVariableNames(vars *map[string]any) {
-	newVars := map[string]any{}
-	for key, value := range *vars {
-		newVars[helpers.BuildVariableName(key)] = value
-	}
-	*vars = newVars
 }
 
 func buildVariables(config *helpers.BuilderConfig, variables map[string]any) []string {

@@ -24,7 +24,7 @@ type Phase struct {
 }
 
 type Environment struct {
-	Target    string         `yaml:"target,omitempty" json:"target,omitempty"`
+	Target    string         `yaml:"target,omitempty" json:"-"`
 	Phases    []Phase        `yaml:"phases,omitempty" json:"-"`
 	Variables map[string]any `yaml:"variables,omitempty" json:"variables,omitempty"`
 	Payload   Payload        `yaml:"payload,omitempty" json:"payloads,omitempty"`

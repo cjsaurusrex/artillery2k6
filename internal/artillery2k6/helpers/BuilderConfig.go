@@ -38,6 +38,6 @@ func NewBuilderConfig() *BuilderConfig {
 		GetVariableFromEnvironmentFuncName: "getVariableFromEnvironmentOrDefault",
 		LoadCsvFunctionName:                "loadCsvFile",
 		CsvOpenAlias:                       "csv_open",
-		TargetVariableName:                 "target",
+		TargetVariableName:                 "base_url",
 	}
 }
