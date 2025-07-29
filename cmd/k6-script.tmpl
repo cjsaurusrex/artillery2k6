@@ -26,7 +26,7 @@ function {{ .Config.VariableFromEnvironmentFuncName }}(variableName) {
 
 {{ if .Config.PayloadsInUse }}
 async function {{ .Config.LoadCsvFunctionName }}(path, options) {
-  let file = {{ .Config.CsvOpenAlias }}(path);
+  let file = await {{ .Config.CsvOpenAlias }}(path);
   return await csv.parse(file, options);
 }
 {{- end }}

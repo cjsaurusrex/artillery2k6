@@ -117,11 +117,11 @@ func buildPayloadDeclarations(config *helpers.BuilderConfig, script models.Artil
 		}
 
 		if slices.Contains(rootPayloads, payload) && slices.Contains(environmentPayloads, payload) {
-			statements = append(statements, fmt.Sprintf(`let %sData = %s(%s[__ENV.%s]?.payloads?.%s || "%s")`, payload, config.LoadCsvFunctionName, strings.ToLower(config.PluralEnvironmentsName()), strings.ToUpper(config.EnvironmentName), payload, payload))
+			statements = append(statements, fmt.Sprintf(`let %sData = await %s(%s[__ENV.%s]?.payloads?.%s || "%s")`, payload, config.LoadCsvFunctionName, strings.ToLower(config.PluralEnvironmentsName()), strings.ToUpper(config.EnvironmentName), payload, payload))
 		} else if slices.Contains(rootPayloads, payload) {
-			statements = append(statements, fmt.Sprintf(`let %sData = %s("%s")`, payload, config.LoadCsvFunctionName, payload))
+			statements = append(statements, fmt.Sprintf(`let %sData = await %s("%s")`, payload, config.LoadCsvFunctionName, payload))
 		} else if slices.Contains(environmentPayloads, payload) {
-			statements = append(statements, fmt.Sprintf(`let %sData = %s(%s[__ENV.%s]?.payloads?.%s)`, payload, config.LoadCsvFunctionName, strings.ToLower(config.PluralEnvironmentsName()), strings.ToUpper(config.EnvironmentName), payload))
+			statements = append(statements, fmt.Sprintf(`let %sData = await %s(%s[__ENV.%s]?.payloads?.%s)`, payload, config.LoadCsvFunctionName, strings.ToLower(config.PluralEnvironmentsName()), strings.ToUpper(config.EnvironmentName), payload))
 		}
 		completed = append(completed, payload)
 	}
