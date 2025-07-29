@@ -16,7 +16,7 @@ func BuildVariableName(input string) string {
 
 func BuildVariableReference(config *BuilderConfig, input string) string {
 	if config != nil && config.EnvironmentsInUse {
-		return fmt.Sprintf(`%s("%s")`, config.GetVariableFromEnvironmentFuncName, BuildVariableName(input))
+		return fmt.Sprintf(`%s("%s")`, config.VariableFromEnvironmentFuncName(), BuildVariableName(input))
 	}
 	if config != nil && config.RootVariableFormat == GlobalThis {
 		return fmt.Sprintf(`globalThis["%s"]`, BuildVariableName(input))

@@ -7,8 +7,16 @@ import (
 	"github.com/cjsaurusrex/artillery2k6/internal/artillery2k6/models"
 	"github.com/spf13/cobra"
 	"os"
+	"strings"
 	"text/template"
 )
+
+func handleFlags(cmd *cobra.Command, bc *helpers.BuilderConfig) {
+	envName, _ := cmd.Flags().GetString("environmentName")
+	if envName != "" {
+		bc.SetEnvironmentName(envName)
+	}
+}
 
 var convertCmd = &cobra.Command{
 	Use:   "convert",
@@ -22,10 +30,17 @@ var convertCmd = &cobra.Command{
 		bc := helpers.NewBuilderConfig()
 		SetupBuilderConfig(bc, artilleryScript)
 
+		handleFlags(cmd, bc)
+
 		k6Script := artillery2k6.BuildScript(bc, artilleryScript)
 		k6ScriptContext := artillery2k6.BuildContext(k6Script, *bc)
 
-		tmpl, err := template.New("k6-script.tmpl").ParseFS(K6ScriptTemplate, "k6-script.tmpl")
+		funcs := template.FuncMap{
+			"ToUpper": strings.ToUpper,
+			"ToLower": strings.ToLower,
+		}
+
+		tmpl, err := template.New("k6-script.tmpl").Funcs(funcs).ParseFS(K6ScriptTemplate, "k6-script.tmpl")
 		if err != nil {
 			fmt.Println(err)
 		}
@@ -59,4 +74,5 @@ func init() {
 	rootCmd.AddCommand(convertCmd)
 
 	convertCmd.Flags().StringP("output", "o", "output.js", "Output file")
+	convertCmd.Flags().String("environmentName", "", "Environment name to use in the output script. This should not be pluralized.")
 }

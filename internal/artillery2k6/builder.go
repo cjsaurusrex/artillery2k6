@@ -7,6 +7,7 @@ import (
 	"github.com/cjsaurusrex/artillery2k6/internal/artillery2k6/models"
 	"path/filepath"
 	"slices"
+	"strings"
 )
 
 func BuildScript(config *helpers.BuilderConfig, script models.ArtilleryScript) K6Script {
@@ -30,7 +31,7 @@ func BuildScript(config *helpers.BuilderConfig, script models.ArtilleryScript) K
 		}
 
 		j, _ := json.MarshalIndent(script.Config.Environments, "", "  ")
-		k6Script.InitLifecycle.Statements = append(k6Script.InitLifecycle.Statements, fmt.Sprintf("let environments = %s", string(j)))
+		k6Script.InitLifecycle.Statements = append(k6Script.InitLifecycle.Statements, fmt.Sprintf("let %s = %s", strings.ToLower(config.PluralEnvironmentsName()), string(j)))
 	}
 
 	k6Script.InitLifecycle.Statements = append(k6Script.InitLifecycle.Statements, buildVariables(config, script.Config.Variables)...)
@@ -116,11 +117,11 @@ func buildPayloadDeclarations(config *helpers.BuilderConfig, script models.Artil
 		}
 
 		if slices.Contains(rootPayloads, payload) && slices.Contains(environmentPayloads, payload) {
-			statements = append(statements, fmt.Sprintf(`let %sData = %s(environments[__ENV.ENVIRONMENT]?.payloads?.%s || "%s")`, payload, config.LoadCsvFunctionName, payload, payload))
+			statements = append(statements, fmt.Sprintf(`let %sData = %s(%s[__ENV.%s]?.payloads?.%s || "%s")`, payload, config.LoadCsvFunctionName, strings.ToLower(config.PluralEnvironmentsName()), strings.ToUpper(config.EnvironmentName), payload, payload))
 		} else if slices.Contains(rootPayloads, payload) {
 			statements = append(statements, fmt.Sprintf(`let %sData = %s("%s")`, payload, config.LoadCsvFunctionName, payload))
 		} else if slices.Contains(environmentPayloads, payload) {
-			statements = append(statements, fmt.Sprintf(`let %sData = %s(environments[__ENV.ENVIRONMENT]?.payloads?.%s)`, payload, config.LoadCsvFunctionName, payload))
+			statements = append(statements, fmt.Sprintf(`let %sData = %s(%s[__ENV.%s]?.payloads?.%s)`, payload, config.LoadCsvFunctionName, strings.ToLower(config.PluralEnvironmentsName()), strings.ToUpper(config.EnvironmentName), payload))
 		}
 		completed = append(completed, payload)
 	}

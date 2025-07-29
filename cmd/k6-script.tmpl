@@ -19,8 +19,8 @@ export default function() {
   {{- end }}
 }
 {{ if .Config.EnvironmentsInUse }}
-function {{ .Config.GetVariableFromEnvironmentFuncName }}(variableName) {
-  return environments[__ENV.ENVIRONMENT]?.["variables"]?.[variableName] || globalThis[variableName];
+function {{ .Config.VariableFromEnvironmentFuncName }}(variableName) {
+  return {{ .Config.PluralEnvironmentsName | ToLower }}[__ENV.{{ .Config.EnvironmentName | ToUpper }}]?.["variables"]?.[variableName] || globalThis[variableName];
 }
 {{- end }}
 
